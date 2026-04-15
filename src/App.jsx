@@ -27,7 +27,7 @@ import StudentProfile from "./pages/student/StudentProfile";
 
 // Parent Pages
 import ParentDashboard from "./pages/parent/ParentDashboard";
-import ParentAttendance from "./pages/parent/ParentAttendance";
+import ParentAttendancePage from "./pages/parent/ParentAttendancePage";
 import ParentGrades from "./pages/parent/ParentGrades";
 import ParentHomework from "./pages/parent/ParentHomework";
 import ParentTimetable from "./pages/parent/ParentTimetable";
@@ -47,19 +47,22 @@ import TeacherProfile from "./pages/teacher/TeacherProfile";
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminTimetable from "./pages/admin/AdminTimetable";
-import AdminAttendance from "./pages/admin/AdminAttendance";
+import AdminAttendancePage from "./pages/admin/attendance/AdminAttendancePage";
 import AdminGrades from "./pages/admin/AdminGrades";
 import AdminTeachers from "./pages/admin/AdminTeachers";
-import AdminStudents from "./pages/admin/AdminStudents";
+import AddStudentPage from "./pages/admin/AddStudentPage";
+import AddTeacherPage from "./pages/admin/AddTeacherPage";
 import AdminHomeroom from "./pages/admin/AdminHomeroom";
 import AdminSubjects from "./pages/admin/AdminSubjects";
 import AdminClasses from "./pages/admin/AdminClasses";
 import AdminMessages from "./pages/admin/AdminMessages";
 import AdminProfile from "./pages/admin/AdminProfile";
 
+// Shared Pages
+import StudentsPage from "./pages/shared/StudentsPage";
+
 // Homeroom Pages
 import HomeroomDashboard from "./pages/homeroom/HomeroomDashboard";
-import HomeroomAddStudent from "./pages/homeroom/HomeroomAddStudent";
 import HomeroomAttendance from "./pages/homeroom/HomeroomAttendance";
 import HomeroomBehavior from "./pages/homeroom/HomeroomBehavior";
 import HomeroomGrades from "./pages/homeroom/HomeroomGrades";
@@ -214,7 +217,7 @@ function AppRoutes() {
         }
       >
         <Route index element={<ParentDashboard />} />
-        <Route path="attendance" element={<ParentAttendance />} />
+        <Route path="attendance" element={<ParentAttendancePage />} />
         <Route path="grades" element={<ParentGrades />} />
         <Route path="homework" element={<ParentHomework />} />
         <Route path="timetable" element={<ParentTimetable />} />
@@ -253,7 +256,7 @@ function AppRoutes() {
         }
       >
         <Route index element={<HomeroomDashboard />} />
-        <Route path="add-student" element={<HomeroomAddStudent />} />
+        <Route path="students" element={<StudentsPage />} />
         <Route path="attendance" element={<HomeroomAttendance />} />
         <Route path="behavior" element={<HomeroomBehavior />} />
         <Route path="grades" element={<HomeroomGrades />} />
@@ -271,12 +274,14 @@ function AppRoutes() {
         }
       >
         <Route index element={<AdminDashboard />} />
-        <Route path="students" element={<AdminStudents />} />
+        <Route path="students" element={<StudentsPage />} />
+        <Route path="students/add" element={<AddStudentPage />} />
         <Route path="teachers" element={<AdminTeachers />} />
+        <Route path="teachers/add" element={<AddTeacherPage />} />
         <Route path="classes" element={<AdminClasses />} />
         <Route path="homeroom" element={<AdminHomeroom />} />
         <Route path="timetable" element={<AdminTimetable />} />
-        <Route path="attendance" element={<AdminAttendance />} />
+        <Route path="attendance" element={<AdminAttendancePage />} />
         <Route path="grades" element={<AdminGrades />} />
         <Route path="subjects" element={<AdminSubjects />} />
         <Route path="messages" element={<AdminMessages />} />

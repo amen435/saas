@@ -231,7 +231,7 @@ export default function HomeroomAttendance() {
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <CalendarCheck className="w-16 h-16 text-muted-foreground/30 mb-4" />
         <h2 className="text-xl font-bold text-heading mb-2">No Students Yet</h2>
-        <p className="text-sm text-muted-foreground">Add students from the Dashboard first to start tracking attendance.</p>
+        <p className="text-sm text-muted-foreground">Students are managed by the school administration. Once students are added to your class roster, you can start tracking attendance.</p>
       </div>
     );
   }

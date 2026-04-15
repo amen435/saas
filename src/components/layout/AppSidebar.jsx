@@ -43,7 +43,7 @@ const navByRole = {
   ],
   homeroom: [
     { label: "Dashboard", path: "/homeroom", icon: LayoutDashboard },
-    { label: "Add Student", path: "/homeroom/add-student", icon: Users },
+    { label: "Students", path: "/homeroom/students", icon: Users },
     { label: "Attendance", path: "/homeroom/attendance", icon: CalendarCheck },
     { label: "Behavior", path: "/homeroom/behavior", icon: AlertTriangle },
     { label: "Grades", path: "/homeroom/grades", icon: BarChart3 },

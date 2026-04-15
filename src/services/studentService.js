@@ -88,6 +88,18 @@ export const studentService = {
     return api.delete(`/homeroom/students/${id}`);
   },
 
+  updateAdminStudent(id, data) {
+    return api.put(`/admin/students/${id}`, data);
+  },
+
+  deleteAdminStudent(id) {
+    return api.delete(`/admin/students/${id}`);
+  },
+
+  updateAdminStudentStatus(id, data) {
+    return api.patch(`/admin/students/${id}/status`, data);
+  },
+
   // School Admin - all students in school
   async getAdminStudents(params = {}) {
     const qs = new URLSearchParams(params).toString();

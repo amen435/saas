@@ -1,12 +1,10 @@
 import { useMemo, useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { Users, CalendarCheck, AlertTriangle, TrendingUp, BookOpen, MessageSquare, Camera, Plus, Eye, Phone } from "lucide-react";
+import { Users, CalendarCheck, AlertTriangle, TrendingUp, BookOpen, MessageSquare, Camera, Eye, Phone } from "lucide-react";
 import { AreaChart, Area, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Button } from "@/components/ui/button";
 import { useHomeroomClasses, useHomeroomStudents } from "@/hooks/useStudents";
-import { studentService } from "@/services/studentService";
 import { parentService } from "@/services/parentService";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -20,7 +18,6 @@ function loadAttendance() {
 }
 
 export default function HomeroomDashboard() {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [profilePhoto, setProfilePhoto] = useState(null);
   const { data: homeroomClasses = [], isLoading: classesLoading } = useHomeroomClasses();
@@ -133,48 +130,6 @@ export default function HomeroomDashboard() {
     address: "",
   });
 
-  const deactivateMutation = useMutation({
-    mutationFn: (studentId) => studentService.deactivateStudent(studentId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["homeroomStudents", classId], exact: false });
-      toast.success("Student deactivated");
-      setStudentDialogOpen(false);
-    },
-    onError: (err) => {
-      console.error("Failed to deactivate student", err);
-      toast.error("Failed to deactivate student");
-    },
-  });
-
-  const updateStudentAndParentMutation = useMutation({
-    mutationFn: async ({ studentId, parentId, payload }) => {
-      // Student update
-      await studentService.updateStudent(studentId, {
-        fullName: payload.studentFullName,
-        guardianName: payload.parentFullName,
-        guardianPhone: payload.parentPhone,
-      });
-
-      // Parent update (if we can find parentId)
-      if (parentId) {
-        await parentService.update(parentId, {
-          fullName: payload.parentFullName,
-          phone: payload.parentPhone,
-        });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["homeroomStudents", classId], exact: false });
-      queryClient.invalidateQueries({ queryKey: ["homeroomParents", classId], exact: false });
-      toast.success("Student/parent updated");
-      setStudentDialogOpen(false);
-    },
-    onError: (err) => {
-      console.error("Failed to update student/parent", err);
-      toast.error("Failed to update");
-    },
-  });
-
   const updateParentMutation = useMutation({
     mutationFn: async ({ parentId, payload }) => {
       await parentService.update(parentId, {
@@ -193,30 +148,6 @@ export default function HomeroomDashboard() {
     onError: (err) => {
       console.error("Failed to update parent", err);
       toast.error("Failed to update parent");
-    },
-  });
-
-  const activateMutation = useMutation({
-    mutationFn: (studentId) => studentService.activateStudent(studentId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["homeroomStudents", classId], exact: false });
-      toast.success("Student activated");
-    },
-    onError: (err) => {
-      console.error("Failed to activate student", err);
-      toast.error("Failed to activate student");
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (studentId) => studentService.deleteStudent(studentId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["homeroomStudents", classId], exact: false });
-      toast.success("Student deleted");
-    },
-    onError: (err) => {
-      console.error("Failed to delete student", err);
-      toast.error("Failed to delete student");
     },
   });
 
@@ -299,9 +230,9 @@ export default function HomeroomDashboard() {
             </p>
           </div>
         </div>
-        <Button onClick={() => navigate("/homeroom/add-student")} className="gradient-primary text-primary-foreground gap-2" disabled={!classId}>
-          <Plus className="w-4 h-4" /> Add Student
-        </Button>
+        <div className="text-xs font-medium text-muted-foreground">
+          Student records are read-only for homeroom teachers.
+        </div>
       </div>
 
       {/* KPI Cards */}
@@ -383,7 +314,7 @@ export default function HomeroomDashboard() {
                       <button
                         onClick={() => {
                           setActiveStudent(s);
-                          setStudentDialogMode("edit");
+                          setStudentDialogMode("view");
                           setStudentForm({
                             studentFullName: s.fullName,
                             parentFullName: s.parentName !== "—" ? s.parentName : "",
@@ -392,23 +323,9 @@ export default function HomeroomDashboard() {
                           setStudentDialogOpen(true);
                         }}
                         className="p-1.5 rounded-md hover:bg-muted"
-                        title="Edit"
+                        title="View"
                       >
-                        <span className="text-xs font-semibold px-2 py-1 rounded-md bg-muted/40 text-heading">Edit</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (confirm("Deactivate this student?")) {
-                            deactivateMutation.mutate(s.id);
-                          }
-                        }}
-                        className="p-1.5 rounded-md hover:bg-destructive/10 text-destructive"
-                        title="Deactivate"
-                        disabled={deactivateMutation.isPending}
-                      >
-                        <span className="text-xs font-semibold px-2 py-1 rounded-md bg-destructive/10 text-destructive">
-                          {deactivateMutation.isPending ? "..." : "Off"}
-                        </span>
+                        <span className="text-xs font-semibold px-2 py-1 rounded-md bg-muted/40 text-heading">View</span>
                       </button>
                     </div>
                   </td>
@@ -488,7 +405,7 @@ export default function HomeroomDashboard() {
                       <button
                         onClick={() => {
                           setActiveStudent(s);
-                          setStudentDialogMode("edit");
+                          setStudentDialogMode("view");
                           setStudentForm({
                             studentFullName: s.fullName,
                             parentFullName: s.parentName !== "—" ? s.parentName : "",
@@ -497,37 +414,9 @@ export default function HomeroomDashboard() {
                           setStudentDialogOpen(true);
                         }}
                         className="p-1.5 rounded-md hover:bg-muted"
-                        title="Edit"
+                        title="View"
                       >
-                        <span className="text-xs font-semibold px-2 py-1 rounded-md bg-muted/40 text-heading">Edit</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (confirm("Activate this student?")) {
-                            activateMutation.mutate(s.id);
-                          }
-                        }}
-                        className="p-1.5 rounded-md hover:bg-success/20 text-success"
-                        title="Activate"
-                        disabled={activateMutation.isPending}
-                      >
-                        <span className="text-xs font-semibold px-2 py-1 rounded-md bg-success/10 text-success">
-                          {activateMutation.isPending ? "..." : "On"}
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (confirm("Delete this student permanently?")) {
-                            deleteMutation.mutate(s.id);
-                          }
-                        }}
-                        className="p-1.5 rounded-md hover:bg-destructive/20 text-destructive"
-                        title="Delete"
-                        disabled={deleteMutation.isPending}
-                      >
-                        <span className="text-xs font-semibold px-2 py-1 rounded-md bg-destructive/10 text-destructive">
-                          {deleteMutation.isPending ? "..." : "Del"}
-                        </span>
+                        <span className="text-xs font-semibold px-2 py-1 rounded-md bg-muted/40 text-heading">View</span>
                       </button>
                     </div>
                   </td>
@@ -583,8 +472,8 @@ export default function HomeroomDashboard() {
       <Dialog open={studentDialogOpen} onOpenChange={setStudentDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{studentDialogMode === "edit" ? "Edit Student & Parent" : "Student Details"}</DialogTitle>
-            <DialogDescription>Update student name and guardian details.</DialogDescription>
+            <DialogTitle>Student Details</DialogTitle>
+            <DialogDescription>Homeroom teachers can review student and guardian information for their assigned class.</DialogDescription>
           </DialogHeader>
           {activeStudent && (
             <div className="space-y-3 py-2">
@@ -626,29 +515,6 @@ export default function HomeroomDashboard() {
             <Button variant="outline" onClick={() => setStudentDialogOpen(false)}>
               Close
             </Button>
-            {studentDialogMode === "edit" && activeStudent && (
-              <Button
-                className="gradient-primary text-primary-foreground"
-                onClick={() => {
-                  if (!studentForm.studentFullName.trim() || !studentForm.parentFullName.trim() || !studentForm.parentPhone.trim()) {
-                    toast.error("Student name, parent name, and parent phone are required.");
-                    return;
-                  }
-                  updateStudentAndParentMutation.mutate({
-                    studentId: activeStudent.id,
-                    parentId: activeStudent.parentId,
-                    payload: {
-                      studentFullName: studentForm.studentFullName.trim(),
-                      parentFullName: studentForm.parentFullName.trim(),
-                      parentPhone: studentForm.parentPhone.trim(),
-                    },
-                  });
-                }}
-                disabled={updateStudentAndParentMutation.isPending}
-              >
-                {updateStudentAndParentMutation.isPending ? "Saving..." : "Save"}
-              </Button>
-            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

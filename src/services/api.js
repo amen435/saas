@@ -215,7 +215,10 @@ api.interceptors.response.use(
       window.location.href = '/login';
     }
 
-    return Promise.reject(new Error(finalMessage));
+    const wrappedError = new Error(finalMessage);
+    wrappedError.status = error.response?.status ?? null;
+    wrappedError.data = error.response?.data ?? null;
+    return Promise.reject(wrappedError);
   }
 );
 

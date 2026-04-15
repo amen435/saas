@@ -7,6 +7,7 @@ import { useTeachers } from "@/hooks/useTeachers";
 import { teacherService } from "@/services/teacherService";
 import { PageSkeleton } from "@/components/shared/LoadingStates";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const emptyTeacher = { name: "", userId: "", username: "", subject: "", phone: "", email: "", password: "", status: "Active", classes: [], joinDate: "" };
 const anim = { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 } };
@@ -29,6 +30,7 @@ function mapApiTeacherToDisplay(t) {
 }
 
 export default function AdminTeachers() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: teachersRaw = [], isLoading, error, refetch } = useTeachers({ isActive: true });
@@ -87,7 +89,7 @@ export default function AdminTeachers() {
     return matchSearch && matchStatus;
   });
 
-  const openAdd = () => { setForm({ ...emptyTeacher }); setModal("add"); };
+  const openAdd = () => navigate('/admin/teachers/add');
   const openEdit = (t) => { setForm({ ...t }); setSelected(t); setModal("edit"); };
   const openView = (t) => { setSelected(t); setModal("view"); };
 
