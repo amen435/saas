@@ -19,27 +19,16 @@ export default function AdminAttendancePage() {
     queryFn: () => classService.getAll({ isActive: true }),
   });
 
-  const { data: devicesRaw = [] } = useQuery({
-    queryKey: ["attendanceDevices"],
-    queryFn: () => attendanceService.getDevices(),
-  });
-
   const classOptions = useMemo(
     () => (Array.isArray(classesRaw) ? classesRaw : []),
     [classesRaw]
   );
 
-  const selectedDevice = useMemo(() => {
-    const devices = Array.isArray(devicesRaw) ? devicesRaw : [];
-    if (selectedClassId === "ALL") return null;
-    return devices.find((device) => String(device.classId) === String(selectedClassId) && device.isActive) || null;
-  }, [devicesRaw, selectedClassId]);
-
   const selectedClassName = useMemo(() => {
     if (selectedClassId === "ALL") return null;
     const selectedClass = classOptions.find((cls) => String(cls.classId) === String(selectedClassId));
-    return selectedDevice?.class?.className || selectedClass?.className || null;
-  }, [classOptions, selectedClassId, selectedDevice]);
+    return selectedClass?.className || null;
+  }, [classOptions, selectedClassId]);
 
   // Fetch summary stats
   const { data: summaryRes, isLoading: loadingSummary, refetch: refetchSummary } = useQuery({
@@ -153,7 +142,7 @@ export default function AdminAttendancePage() {
         <div className="lg:col-span-2">
           <WebcamDemoPanel
             onRecognitionSuccess={handleRecognitionSuccess}
-            selectedDeviceId={selectedDevice?.deviceId}
+            selectedClassId={selectedClassId === "ALL" ? null : selectedClassId}
             selectedClassName={selectedClassName}
             expectedRole={expectedRole}
           />

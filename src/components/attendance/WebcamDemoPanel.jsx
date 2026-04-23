@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function WebcamDemoPanel({
   onRecognitionSuccess,
-  selectedDeviceId,
+  selectedClassId,
   selectedClassName,
   expectedRole = "ALL",
 }) {
@@ -74,8 +74,8 @@ export default function WebcamDemoPanel({
       return;
     }
 
-    if (!selectedDeviceId) {
-      toast.error("Select a class with a registered device first.");
+    if (!selectedClassId) {
+      toast.error("Select a class first.");
       return;
     }
 
@@ -83,7 +83,7 @@ export default function WebcamDemoPanel({
     try {
       const recognitionData = await attendanceService.simulateFacialRecognition({
         imageBase64: capturedImage,
-        deviceId: selectedDeviceId,
+        classId: selectedClassId,
         timestamp: new Date().toISOString(),
       });
 
@@ -145,7 +145,7 @@ export default function WebcamDemoPanel({
             Webcam Recognition
           </h3>
           <p className="text-xs text-text-secondary mt-1">
-            {selectedClassName ? `Current class device: ${selectedClassName}` : "Select a class/device to begin"}
+            {selectedClassName ? `Current class: ${selectedClassName}` : "Select a class to begin"}
           </p>
         </div>
         <span className="px-2.5 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md bg-primary/10 text-primary border border-primary/20">
@@ -216,7 +216,7 @@ export default function WebcamDemoPanel({
                 </button>
                 <button
                   onClick={recognizeAttendance}
-                  disabled={isRecognizing || !selectedDeviceId}
+                  disabled={isRecognizing || !selectedClassId}
                   className="flex items-center justify-center gap-2 py-2 px-4 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-70"
                 >
                   {isRecognizing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ScanFace className="w-4 h-4" />}
