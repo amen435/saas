@@ -26,7 +26,13 @@ export default function WebcamDemoPanel({
 
   const startCamera = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: "user",
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
+      });
       setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
@@ -56,9 +62,13 @@ export default function WebcamDemoPanel({
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d");
+    ctx.save();
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.restore();
 
-    const imageUrl = canvas.toDataURL("image/jpeg");
+    const imageUrl = canvas.toDataURL("image/jpeg", 0.9);
     setCapturedImage(imageUrl);
     setResult(null);
   };
@@ -170,6 +180,7 @@ export default function WebcamDemoPanel({
                   playsInline
                   muted
                   className={`w-full h-full object-cover ${stream ? "block" : "hidden"}`}
+                  style={{ transform: "scaleX(-1)" }}
                 />
                 {!stream && (
                   <div className="flex flex-col items-center justify-center text-muted-foreground p-6 text-center">

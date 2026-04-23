@@ -134,7 +134,6 @@ export default function AddStudentForm({ classId, fixedClass, onSuccess, onCance
         guardianPhone: form.parentPhone?.trim() || undefined,
         address: undefined,
         faceImageBase64: faceImage,
-        photoBase64: faceImage,
       },
       parent: {
         userId: form.parentId.trim(),

@@ -92,7 +92,6 @@ export default function AddTeacherPage() {
       role: "TEACHER",
       schoolId: user?.schoolId,
       faceImageBase64: faceImage,
-      photoBase64: faceImage,
     };
 
     mutation.mutate(payload);
